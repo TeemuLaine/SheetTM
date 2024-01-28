@@ -26,13 +26,12 @@ module.exports = {
       let track = interaction.options.getInteger("track");
       track = track < 10 ? `0${track}` : track.toString();
 
-      const timeRegex = /^\d:\d{2}\.\d{3}$/;
-      const time = interaction.options.getString("Time");
+      const timeRegex = /^([0-5]?\d):([0-5]?\d)\.(\d{3})$/;
+      const time = interaction.options.getString("time");
 
       if (!timeRegex.test(time)) {
-        // The time format is incorrect
         await interaction.reply(
-          "Invalid time format. Please use the format 'x:xx.xxx'"
+          "Invalid time format."
         );
         return;
       }
