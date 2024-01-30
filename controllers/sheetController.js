@@ -1,8 +1,8 @@
 const { google } = require("googleapis");
 const { getColumnLetter } = require("../utility-functions");
+const { spreadsheetId } = require("../config.json");
 
-const updateSheet = async (player, date, div, rank) => {
-  console.log("hello");
+const updateCotdSheet = async (player, date, div, rank) => {
   const auth = new google.auth.GoogleAuth({
     keyFile: "credentials.json",
     scopes: "https://www.googleapis.com/auth/spreadsheets",
@@ -11,7 +11,6 @@ const updateSheet = async (player, date, div, rank) => {
   const client = await auth.getClient();
   const googleSheets = google.sheets({ version: "v4", auth: client });
 
-  const spreadsheetId = "1obF56q8nfjOrPUlOTAAi2BpttHUVXFn-GdDCPVmakoc";
   const range = "COTD!A1:AF";
 
   const getRows = await googleSheets.spreadsheets.values.get({
@@ -59,6 +58,55 @@ const updateSheet = async (player, date, div, rank) => {
   }
 };
 
+const updateCotdInfo = async (track, type, date) => {
+  const auth = new google.auth.GoogleAuth({
+    keyFile: "credentials.json",
+    scopes: "https://www.googleapis.com/auth/spreadsheets",
+  });
+
+  const client = await auth.getClient();
+  const googleSheets = google.sheets({ version: "v4", auth: client });
+
+  const range = "COTD!A1:C";
+
+  const getRows = await googleSheets.spreadsheets.values.get({
+    auth,
+    spreadsheetId,
+    range,
+  });
+
+  const values = getRows.data.values;
+  let matchRow;
+
+  for (let row = 0; row < values.length; row++) {
+    if (values[row][0] === date) {
+      matchRow = row + 1;
+      console.log(`Match for ${date} at row ${row + 1}`);
+      break;
+    }
+  }
+
+  if (matchRow) {
+    const updateRange = `COTD!B${matchRow}:C${matchRow}`;
+
+    googleSheets.spreadsheets.values.update({
+      auth,
+      spreadsheetId,
+      range: updateRange,
+      valueInputOption: "USER_ENTERED",
+      resource: {
+        values: [[track, type]],
+      },
+    });
+
+    return values;
+  } else {
+    console.log("No matches");
+    return;
+  }
+};
+
 module.exports = {
-  updateSheet,
+  updateCotdSheet,
+  updateCotdInfo,
 };

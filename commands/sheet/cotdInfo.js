@@ -4,21 +4,18 @@ const fetch = require("node-fetch");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("cotd")
-    .setDescription("Edit your cup of the day position on the sheet")
-    .addIntegerOption((option) =>
+    .setName("cotdinfo")
+    .setDescription("Edit the info of the Track of the day on the sheet")
+    .addStringOption((option) =>
       option
-        .setMinValue(1)
-        .setName("division")
-        .setDescription("Your division")
+        .setName("name")
+        .setDescription("The name of the track")
         .setRequired(true)
     )
-    .addIntegerOption((option) =>
+    .addStringOption((option) =>
       option
-        .setMinValue(1)
-        .setMaxValue(64)
-        .setName("rank")
-        .setDescription("Your knockout rank")
+        .setName("type")
+        .setDescription("The type of the track")
         .setRequired(true)
     )
     .addStringOption((option) =>
@@ -29,9 +26,8 @@ module.exports = {
 
   async execute(interaction) {
     try {
-      const user = await getName(interaction);
-      const div = interaction.options.getInteger("division");
-      const rank = interaction.options.getInteger("rank");
+      const track = interaction.options.getString("name");
+      const type = interaction.options.getString("type");
       let date = "";
 
       if (interaction.options.getString("date")) {
@@ -53,20 +49,14 @@ module.exports = {
         return;
       }
 
-      if(!user){
-        await interaction.reply("You haven't set your name yet. Please do /setname.");
-        return;
-      }
-
       try {
         const data = {
-          player: user.name,
+          track: track,
+          type: type,
           date: date,
-          div: div,
-          rank: rank,
         };
 
-        const response = await fetch("http://localhost:8080/cotd", {
+        const response = await fetch("http://localhost:8080/cotdinfo", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -79,13 +69,12 @@ module.exports = {
           console.error(`Error: ${response.status} - ${await response.text()}`);
           return;
         }
-
       } catch (error) {
         console.error("Error:", error);
       }
 
       await interaction.reply(
-        `Updated ${user.name}'s cotd performance on ${date} to division ${div}, rank ${rank}`
+        `Updated the track of the day on ${date} to ${track}, of type ${type}`
       );
     } catch (error) {
       console.error("Error in execute:", error.message);
