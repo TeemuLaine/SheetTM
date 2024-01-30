@@ -133,3 +133,5 @@ dist
 # Customs
 config.json
 userData.json
+index.js
+credentials.json

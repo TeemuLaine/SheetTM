@@ -43,4 +43,13 @@ const setName = async (userId, newName) => {
   }
 };
 
-module.exports = { getName, setName };
+const getColumnLetter = (index) =>  {
+  let letter = '';
+  while (index >= 0) {
+    letter = String.fromCharCode(index % 26 + 65) + letter;
+    index = Math.floor(index / 26) - 1;
+  }
+  return letter;
+}
+
+module.exports = { getName, setName, getColumnLetter };
