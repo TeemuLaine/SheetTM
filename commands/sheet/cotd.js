@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { getName } = require("../../utility-functions");
+const fetch = require("node-fetch");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -60,7 +61,7 @@ module.exports = {
           rank: rank,
         };
 
-        const response = await fetch("http://localhost:8000/cotd", {
+        const response = await fetch("http://localhost:8080/cotd", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -25,6 +25,6 @@ app.get("/", (req,res) => {
   res.send("ok")
 })
 
-app.listen(8000, () => {
-  console.log("Backend running on port 8000");
+app.listen(8080, () => {
+  console.log("Backend running on port 8080");
 });

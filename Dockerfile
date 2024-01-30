@@ -1,5 +1,4 @@
-# Use a smaller base image
-FROM node:14-alpine
+FROM node:17-alpine
 
 WORKDIR /usr/src/app
 
@@ -12,5 +11,5 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Start the application
-CMD ["node", "main.js"]
+# Start a script that runs both index.js and main.js
+CMD ["sh", "-c", "node index.js & node main.js"]
