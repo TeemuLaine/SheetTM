@@ -43,13 +43,40 @@ module.exports = {
         const today = new Date();
         const day = today.getDate().toString().padStart(2, "0");
         const month = (today.getMonth() + 1).toString().padStart(2, "0");
-        date = `${day}/${month}`;
+        date = `${month}/${day}`;
       }
 
-      const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])$/;
+      const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/;
       if (!dateRegex.test(date)) {
         await interaction.reply("Invalid date format.");
         return;
+      }
+
+      try {
+        const data = {
+          player: user.name,
+          date: date,
+          div: div,
+          rank: rank,
+        };
+
+        const response = await fetch("http://localhost:8000/cotd", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          // Log the error status and response text
+          console.error(`Error: ${response.status} - ${await response.text()}`);
+          return;
+        }
+
+        const responseData = await response.json();
+      } catch (error) {
+        console.error("Error:", error);
       }
 
       await interaction.reply(

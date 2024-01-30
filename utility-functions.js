@@ -8,8 +8,6 @@ const getName = async (interaction) => {
 
     // Parse the JSON content
     const userNames = JSON.parse(fileData);
-
-    console.log(userNames)
     // Retrieve and reply with the user's name
     return userNames.find((user) => user.id === interaction.user.id);
   } catch (error) {
