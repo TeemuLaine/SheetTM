@@ -20,19 +20,15 @@ const updateCotdSheet = async (player, date, div, rank) => {
   });
 
   const values = getRows.data.values;
-  console.log(values[0]);
-
   let matchColumn;
   let matchRow;
 
   for (let column = 0; column < values[0].length; column++) {
     if (values[0][column] === player) {
-      console.log(`Match for ${player} at column ${getColumnLetter(column)}`);
       matchColumn = getColumnLetter(column - 1);
       for (let row = 0; row < values.length; row++) {
         if (values[row][0] === date) {
           matchRow = row + 1;
-          console.log(`Match for ${date} at row ${row + 1}`);
           break;
         }
       }
@@ -50,11 +46,9 @@ const updateCotdSheet = async (player, date, div, rank) => {
         values: [[div, rank]],
       },
     });
-
-    return values;
+    return { matchFound: true };
   } else {
-    console.log("No matches");
-    return;
+    return { matchFound: false };
   }
 };
 
@@ -81,7 +75,6 @@ const updateCotdInfo = async (track, type, date) => {
   for (let row = 0; row < values.length; row++) {
     if (values[row][0] === date) {
       matchRow = row + 1;
-      console.log(`Match for ${date} at row ${row + 1}`);
       break;
     }
   }
@@ -98,11 +91,6 @@ const updateCotdInfo = async (track, type, date) => {
         values: [[track, type]],
       },
     });
-
-    return values;
-  } else {
-    console.log("No matches");
-    return;
   }
 };
 

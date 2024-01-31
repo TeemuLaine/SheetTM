@@ -1,5 +1,8 @@
 const express = require("express");
-const { updateCotdSheet, updateCotdInfo } = require("./controllers/sheetController");
+const {
+  updateCotdSheet,
+  updateCotdInfo,
+} = require("./controllers/sheetController");
 
 const app = express();
 

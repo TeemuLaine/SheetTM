@@ -34,6 +34,8 @@ module.exports = {
       const rank = interaction.options.getInteger("rank");
       let date = "";
 
+      let success;
+
       if (interaction.options.getString("date")) {
         const unformattedDate = interaction.options.getString("date");
         let [day, month] = unformattedDate.split("/");
@@ -53,8 +55,10 @@ module.exports = {
         return;
       }
 
-      if(!user){
-        await interaction.reply("You haven't set your name yet. Please do /setname.");
+      if (!user) {
+        await interaction.reply(
+          "You haven't set your name yet. Please do /setname."
+        );
         return;
       }
 
@@ -74,19 +78,30 @@ module.exports = {
           body: JSON.stringify(data),
         });
 
+        const result = await response.json();
+
+        if (result.matchFound) {
+          success = true;
+        } else {
+          success = false;
+        }
+
         if (!response.ok) {
           // Log the error status and response text
           console.error(`Error: ${response.status} - ${await response.text()}`);
           return;
         }
-
       } catch (error) {
         console.error("Error:", error);
       }
 
-      await interaction.reply(
-        `Updated ${user.name}'s cotd performance on ${date} to division ${div}, rank ${rank}`
-      );
+      if (success) {
+        await interaction.reply(
+          `Updated ${user.name}'s cotd performance on ${date} to division ${div}, rank ${rank}`
+        );
+      } else {
+        await interaction.reply(`Name not found on the sheet.`);
+      }
     } catch (error) {
       console.error("Error in execute:", error.message);
       await interaction.reply("An error occurred while executing the command.");
