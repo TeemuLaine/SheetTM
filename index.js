@@ -2,6 +2,7 @@ const express = require("express");
 const {
   updateCotdSheet,
   updateCotdInfo,
+  updateCampaign,
 } = require("./controllers/sheetController");
 
 const app = express();
@@ -17,6 +18,22 @@ app.post("/cotd", async (req, res) => {
 
   try {
     const result = await updateCotdSheet(player, date, div, rank);
+    res.json(result);
+  } catch (error) {
+    console.error("Error updating sheet: ", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/campaign", async (req, res) => {
+  const { player, track, time } = req.body;
+
+  if (!player || !track || !time) {
+    return res.status(400).json({ error: "Missing required parameters." });
+  }
+
+  try {
+    const result = await updateCampaign(player, track, time);
     res.json(result);
   } catch (error) {
     console.error("Error updating sheet: ", error);
