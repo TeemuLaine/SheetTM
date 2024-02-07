@@ -28,6 +28,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
+
     try {
       const user = await getName(interaction);
       const div = interaction.options.getInteger("division");
@@ -78,6 +79,14 @@ module.exports = {
           body: JSON.stringify(data),
         });
 
+        if (!response.ok) {
+          console.error(`Error: ${response.status} - ${await response.text()}`);
+          await interaction.reply(
+            "An error occurred while updating data on the sheet."
+          );
+          return;
+        }
+
         const result = await response.json();
 
         if (result.matchFound) {
@@ -85,14 +94,10 @@ module.exports = {
         } else {
           success = false;
         }
-
-        if (!response.ok) {
-          // Log the error status and response text
-          console.error(`Error: ${response.status} - ${await response.text()}`);
-          return;
-        }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching data:", error);
+        await interaction.reply("An error occurred while fetching data.");
+        return;
       }
 
       if (success) {
@@ -103,7 +108,7 @@ module.exports = {
         await interaction.reply(`Name not found on the sheet.`);
       }
     } catch (error) {
-      console.error("Error in execute:", error.message);
+      console.error("Error in execute:", error);
       await interaction.reply("An error occurred while executing the command.");
     }
   },

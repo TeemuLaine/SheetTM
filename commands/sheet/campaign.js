@@ -26,6 +26,7 @@ module.exports = {
       const user = await getName(interaction);
       let track = interaction.options.getInteger("track");
       track = track < 10 ? `0${track}` : track.toString();
+      let rank;
 
       let success;
 
@@ -63,6 +64,7 @@ module.exports = {
 
         if (result.matchFound) {
           success = true;
+          rank = result.rank;
         } else {
           success = false;
         }
@@ -78,7 +80,7 @@ module.exports = {
 
       if (success) {
         await interaction.reply(
-          `Updated ${user.name}'s time on track ${track} to ${time}`
+          `Updated ${user.name}'s time on track ${track} to ${time}, placing #${rank}`
         );
       } else {
         await interaction.reply(`Name not found on the sheet.`);

@@ -112,6 +112,7 @@ const updateCampaign = async (player, track, time) => {
   });
 
   const values = getRows.data.values;
+
   let matchColumn;
   let matchRow;
 
@@ -138,9 +139,34 @@ const updateCampaign = async (player, track, time) => {
         values: [[time]],
       },
     });
-    return { matchFound: true };
+
+    const rank = await getRankings(googleSheets, time, track, auth);
+
+    return { matchFound: true, rank };
   } else {
     return { matchFound: false };
+  }
+};
+
+const getRankings = async (googleSheets, time, track, auth) => {
+  const rankingRange = "Campaign!B84:L109";
+
+  const getRankings = await googleSheets.spreadsheets.values.get({
+    auth,
+    spreadsheetId,
+    range: rankingRange,
+  });
+
+  const rankings = getRankings.data.values;
+
+  for (let row = 0; row < rankings.length; row++) {
+    if (rankings[row][0] === track) {
+      for (let column = 0; column < rankings[0].length; column++) {
+        if(rankings[row][column] === time){
+          return 3;
+        }
+      }
+    }
   }
 };
 
