@@ -1,18 +1,12 @@
-const { google } = require("googleapis");
 const {
   getColumnLetter,
   calculateTimeDifference,
+  getSheetAuth,
 } = require("../utility-functions");
 const { spreadsheetId } = require("../config.json");
 
 const updateCotdSheet = async (player, date, div, rank) => {
-  const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
-    scopes: "https://www.googleapis.com/auth/spreadsheets",
-  });
-
-  const client = await auth.getClient();
-  const googleSheets = google.sheets({ version: "v4", auth: client });
+  const [auth, googleSheets] = await getSheetAuth();
 
   const range = "COTD!A1:AF";
 
@@ -56,13 +50,7 @@ const updateCotdSheet = async (player, date, div, rank) => {
 };
 
 const updateCotdInfo = async (track, type, date) => {
-  const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
-    scopes: "https://www.googleapis.com/auth/spreadsheets",
-  });
-
-  const client = await auth.getClient();
-  const googleSheets = google.sheets({ version: "v4", auth: client });
+  const [auth, googleSheets] = await getSheetAuth();
 
   const range = "COTD!A1:C";
 
@@ -98,13 +86,7 @@ const updateCotdInfo = async (track, type, date) => {
 };
 
 const updateCampaign = async (player, track, time) => {
-  const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
-    scopes: "https://www.googleapis.com/auth/spreadsheets",
-  });
-
-  const client = await auth.getClient();
-  const googleSheets = google.sheets({ version: "v4", auth: client });
+  const [auth, googleSheets] = await getSheetAuth();
 
   const range = "Campaign!A1:L";
 
@@ -182,8 +164,30 @@ const getRankings = async (googleSheets, time, track, auth) => {
   }
 };
 
+const getLeaderboard = async () => {
+  const [auth, googleSheets] = await getSheetAuth();
+
+  const range = "Campaign!C1:L2";
+  const getRows = await googleSheets.spreadsheets.values.get({
+    auth,
+    spreadsheetId,
+    range,
+  });
+
+  const values = getRows.data.values;
+  const [names, scores] = [values[0], values[1]];
+  const unorderedLeaderboard = names.map((name, index) => ({
+    name,
+    score: scores[index],
+  }));
+  const leaderboard = unorderedLeaderboard.sort((a, b) => b.score - a.score);
+  return leaderboard;
+  s;
+};
+
 module.exports = {
   updateCotdSheet,
   updateCotdInfo,
   updateCampaign,
+  getLeaderboard,
 };

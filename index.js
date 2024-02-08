@@ -3,6 +3,7 @@ const {
   updateCotdSheet,
   updateCotdInfo,
   updateCampaign,
+  getLeaderboard,
 } = require("./controllers/sheetController");
 
 const app = express();
@@ -57,6 +58,15 @@ app.post("/cotdinfo", async (req, res) => {
   }
 });
 
+app.get("/lb", async (req, res) => {
+  try {
+    const result = await getLeaderboard();
+    res.json(result);
+  } catch (error) {
+    console.error("Error updating sheet: ", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 app.get("/", (req, res) => {
   res.send("ok");
 });
