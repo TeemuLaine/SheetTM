@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
+const fetch = require("node-fetch");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -24,7 +25,7 @@ module.exports = {
     } catch (error) {
       console.error("Error reading data:", error.message);
       await interaction.editReply(
-        "An error occurred while retrieving your name."
+        "An error occurred while retrieving the leaderboard."
       );
     }
   },
