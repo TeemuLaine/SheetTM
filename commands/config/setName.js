@@ -19,13 +19,16 @@ module.exports = {
     const newName = interaction.options.getString("name");
 
     try {
+      await interaction.deferReply();
       await setName(userId, newName);
 
-      await interaction.reply(`Set your name as ${newName}.`);
-      console.info(`User ${interaction.user.username} (id: ${userId} set their name as ${newName})`);
+      await interaction.editReply(`Set your name as ${newName}.`);
+      console.info(
+        `User ${interaction.user.username} (id: ${userId} set their name as ${newName})`
+      );
     } catch (error) {
       console.error("Error updating data:", error.message);
-      await interaction.reply("An error occurred while setting your name.");
+      await interaction.editReply("An error occurred while setting your name.");
     }
   },
 };

@@ -26,6 +26,7 @@ module.exports = {
 
   async execute(interaction) {
     try {
+      await interaction.deferReply();
       const track = interaction.options.getString("name");
       const type = interaction.options.getString("type");
       let date = "";
@@ -45,7 +46,7 @@ module.exports = {
 
       const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/;
       if (!dateRegex.test(date)) {
-        await interaction.reply("Invalid date format.");
+        await interaction.editReply("Invalid date format.");
         return;
       }
 
@@ -73,12 +74,12 @@ module.exports = {
         console.error("Error:", error);
       }
 
-      await interaction.reply(
+      await interaction.editReply(
         `Updated the track of the day on ${date} to ${track}, of type ${type}`
       );
     } catch (error) {
       console.error("Error in execute:", error.message);
-      await interaction.reply("An error occurred while executing the command.");
+      await interaction.editReply("An error occurred while executing the command.");
     }
   },
 };

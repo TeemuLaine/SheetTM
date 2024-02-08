@@ -23,23 +23,25 @@ module.exports = {
 
   async execute(interaction) {
     try {
+      await interaction.deferReply();
+
       const user = await getName(interaction);
       let track = interaction.options.getInteger("track");
       track = track < 10 ? `0${track}` : track.toString();
       let rank;
-
+      let timeSave;
       let success;
 
       const timeRegex = /^([0-5]?\d):([0-5]?\d)\.(\d{3})$/;
       const time = interaction.options.getString("time");
 
       if (!timeRegex.test(time)) {
-        await interaction.reply("Invalid time format.");
+        await interaction.editReply("Invalid time format.");
         return;
       }
 
       if (!user) {
-        await interaction.reply(
+        await interaction.editReply(
           "You haven't set your name yet. Please do /setname."
         );
         return;
@@ -65,6 +67,7 @@ module.exports = {
         if (result.matchFound) {
           success = true;
           rank = result.rank;
+          timeSave = result.timeSave;
         } else {
           success = false;
         }
@@ -79,15 +82,17 @@ module.exports = {
       }
 
       if (success) {
-        await interaction.reply(
-          `Updated ${user.name}'s time on track ${track} to ${time}, placing #${rank}`
+        await interaction.editReply(
+          `Updated ${user.name}'s time on track ${track} to ${time} (-${timeSave}) - placing #${rank}`
         );
       } else {
-        await interaction.reply(`Name not found on the sheet.`);
+        await interaction.editReply(`Name not found on the sheet.`);
       }
     } catch (error) {
       console.error("Error in execute:", error.message);
-      await interaction.reply("An error occurred while executing the command.");
+      await interaction.editReply(
+        "An error occurred while executing the command."
+      );
     }
   },
 };

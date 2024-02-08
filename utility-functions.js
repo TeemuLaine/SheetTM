@@ -16,6 +16,26 @@ const getName = async (interaction) => {
   }
 };
 
+const calculateTimeDifference = (oldTime, newTime) => {
+  const timeDiff = Math.abs(timeToMs(oldTime) - timeToMs(newTime));
+  return msToTime(timeDiff);
+};
+
+timeToMs = (time) => {
+  const [minutes, rest] = time.split(":");
+  const [seconds, milliseconds] = rest.split(".").map(parseFloat);
+  return minutes * 60000 + seconds * 1000 + milliseconds;
+};
+
+msToTime = (ms) => {
+  const minutes = Math.floor(ms / 60000);
+  ms %= 60000;
+  const seconds = Math.floor(ms / 1000);
+  ms %= 1000;
+  return `${minutes}:${seconds.toString().padStart(2, "0")}.${ms
+    .toString()
+    .padStart(3, "0")}`;
+};
 const setName = async (userId, newName) => {
   try {
     // Read existing data from the file
@@ -41,13 +61,13 @@ const setName = async (userId, newName) => {
   }
 };
 
-const getColumnLetter = (index) =>  {
-  let letter = '';
+const getColumnLetter = (index) => {
+  let letter = "";
   while (index >= 0) {
-    letter = String.fromCharCode(index % 26 + 65) + letter;
+    letter = String.fromCharCode((index % 26) + 65) + letter;
     index = Math.floor(index / 26) - 1;
   }
   return letter;
-}
+};
 
-module.exports = { getName, setName, getColumnLetter };
+module.exports = { getName, setName, getColumnLetter, calculateTimeDifference };

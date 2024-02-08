@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const {getName} = require("../../utility-functions");
+const { getName } = require("../../utility-functions");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,19 +8,22 @@ module.exports = {
 
   async execute(interaction) {
     try {
+      await interaction.deferReply();
       const user = await getName(interaction);
       if (user) {
-        await interaction.reply(
+        await interaction.editReply(
           `Your name on the sheet is saved as ${user.name}.`
         );
       } else {
-        await interaction.reply(
+        await interaction.editReply(
           "Your name is not set yet. Use /setname to set it."
         );
       }
     } catch (error) {
       console.error("Error reading data:", error.message);
-      await interaction.reply("An error occurred while retrieving your name.");
+      await interaction.editReply(
+        "An error occurred while retrieving your name."
+      );
     }
   },
 };

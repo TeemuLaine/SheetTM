@@ -1,5 +1,8 @@
 const { google } = require("googleapis");
-const { getColumnLetter } = require("../utility-functions");
+const {
+  getColumnLetter,
+  calculateTimeDifference,
+} = require("../utility-functions");
 const { spreadsheetId } = require("../config.json");
 
 const updateCotdSheet = async (player, date, div, rank) => {
@@ -118,7 +121,7 @@ const updateCampaign = async (player, track, time) => {
 
   for (let column = 0; column < values[0].length; column++) {
     if (values[0][column] === player) {
-      matchColumn = getColumnLetter(column);
+      matchColumn = column;
       for (let row = 0; row < values.length; row++) {
         if (values[row][0] === track) {
           matchRow = row + 1;
@@ -128,7 +131,7 @@ const updateCampaign = async (player, track, time) => {
     }
   }
   if (matchColumn && matchRow) {
-    const updateRange = `Campaign!${matchColumn}${matchRow}`;
+    const updateRange = `Campaign!${getColumnLetter(matchColumn)}${matchRow}`;
 
     googleSheets.spreadsheets.values.update({
       auth,
@@ -140,9 +143,18 @@ const updateCampaign = async (player, track, time) => {
       },
     });
 
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const rank = await getRankings(googleSheets, time, track, auth);
 
-    return { matchFound: true, rank };
+    return {
+      matchFound: true,
+      rank,
+      timeSave: calculateTimeDifference(
+        values[matchRow - 1][matchColumn],
+        time
+      ),
+    };
   } else {
     return { matchFound: false };
   }
@@ -162,8 +174,8 @@ const getRankings = async (googleSheets, time, track, auth) => {
   for (let row = 0; row < rankings.length; row++) {
     if (rankings[row][0] === track) {
       for (let column = 0; column < rankings[0].length; column++) {
-        if(rankings[row][column] === time){
-          return 3;
+        if (rankings[row][column] === time) {
+          return column;
         }
       }
     }
