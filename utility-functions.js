@@ -21,13 +21,13 @@ const calculateTimeDifference = (oldTime, newTime) => {
   return msToTime(timeDiff);
 };
 
-timeToMs = (time) => {
+const timeToMs = (time) => {
   const [minutes, rest] = time.split(":");
   const [seconds, milliseconds] = rest.split(".").map(parseFloat);
   return minutes * 60000 + seconds * 1000 + milliseconds;
 };
 
-msToTime = (ms) => {
+const msToTime = (ms) => {
   const minutes = Math.floor(ms / 60000);
   ms %= 60000;
   const seconds = Math.floor(ms / 1000);
@@ -36,6 +36,7 @@ msToTime = (ms) => {
     .toString()
     .padStart(3, "0")}`;
 };
+
 const setName = async (userId, newName) => {
   try {
     // Read existing data from the file
