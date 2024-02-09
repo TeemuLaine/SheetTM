@@ -2,7 +2,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
-const { token } = require("./config.json");
+const { token, channelId, name } = require("./config.json");
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -36,6 +36,9 @@ for (const folder of commandFolders) {
 // It makes some properties non-nullable.
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+  const channel = client.channels.cache.get(channelId);
+
+  channel.send(`${name} has turned me on :)`);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -66,5 +69,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
+process.on("SIGTERM", async () => {
+  const channel = client.channels.cache.get(channelId);
+
+  await channel.send(`${name} has turned me off :(`);
+  // Perform cleanup tasks here (e.g., disconnecting from Discord)
+  client
+    .destroy()
+    .then(() => {
+      console.log("Disconnected from Discord. Exiting...");
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error("Error occurred while disconnecting:", error);
+      process.exit(1);
+    });
+});
 // Log in to Discord with your client's token
 client.login(token);
