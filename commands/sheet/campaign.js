@@ -32,12 +32,20 @@ module.exports = {
       let timeSave;
       let success;
 
-      const timeRegex = /^([0-5]?\d):([0-5]?\d)\.(\d{3})$/;
-      const time = interaction.options.getString("time");
+      const timeRegexWithMinutes = /^([0-5]?\d):([0-5]?\d)\.(\d{3})$/;
+      const timeRegexWithoutMinutes = /^([0-5]?\d)\.(\d{3})$/;
+      let time = interaction.options.getString("time");
 
-      if (!timeRegex.test(time)) {
+      if (
+        !timeRegexWithMinutes.test(time) &&
+        !timeRegexWithoutMinutes.test(time)
+      ) {
         await interaction.editReply("Invalid time format.");
         return;
+      }
+
+      if (timeRegexWithoutMinutes.test(time)) {
+        time = `0:${time}`;
       }
 
       if (!user) {
