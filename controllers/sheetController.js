@@ -88,7 +88,7 @@ const updateCotdInfo = async (track, type, date) => {
 const updateCampaign = async (player, track, time) => {
   const [auth, googleSheets] = await getSheetAuth();
 
-  const range = "Campaign!A1:L";
+  const range = "Campaign!A1:M";
 
   const getRows = await googleSheets.spreadsheets.values.get({
     auth,
@@ -143,7 +143,7 @@ const updateCampaign = async (player, track, time) => {
 };
 
 const getRankings = async (googleSheets, time, track, auth) => {
-  const rankingRange = "Campaign!B84:L109";
+  const rankingRange = "Campaign!C84:M109";
 
   const getRankings = await googleSheets.spreadsheets.values.get({
     auth,
@@ -167,7 +167,7 @@ const getRankings = async (googleSheets, time, track, auth) => {
 const getLeaderboard = async () => {
   const [auth, googleSheets] = await getSheetAuth();
 
-  const range = "Campaign!C1:L2";
+  const range = "Campaign!D1:M2";
   const getRows = await googleSheets.spreadsheets.values.get({
     auth,
     spreadsheetId,
