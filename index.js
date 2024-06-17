@@ -43,14 +43,14 @@ app.post("/campaign", async (req, res) => {
 });
 
 app.post("/cotdinfo", async (req, res) => {
-  const { track, type, date } = req.body;
+  const { track, type, date, playerCount } = req.body;
 
   if (!track || !type || !date) {
     return res.status(400).json({ error: "Missing required parameters." });
   }
 
   try {
-    const result = await updateCotdInfo(track, type, date);
+    const result = await updateCotdInfo(track, type, date, playerCount);
     res.json(result);
   } catch (error) {
     console.error("Error updating sheet: ", error);

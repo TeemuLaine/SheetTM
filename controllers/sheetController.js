@@ -49,8 +49,9 @@ const updateCotdSheet = async (player, date, div, rank) => {
   }
 };
 
-const updateCotdInfo = async (track, type, date) => {
+const updateCotdInfo = async (track, type, date, playerCount) => {
   const [auth, googleSheets] = await getSheetAuth();
+  console.log(playerCount)
 
   const range = "COTD!A1:C";
 
@@ -82,6 +83,42 @@ const updateCotdInfo = async (track, type, date) => {
         values: [[track, type]],
       },
     });
+  }
+
+  if (playerCount) {
+    // Update player count:
+    const playerCountRange = `'COTD Stats'!A3:B`;
+
+    const getPlayerCountRows = await googleSheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId,
+      range: playerCountRange,
+    });
+
+    const playerCountValues = getPlayerCountRows.data.values;
+
+    matchRow = null;
+
+    for (let row = 0; row < values.length; row++) {
+      if (values[row][0] === date) {
+        matchRow = row + 1;
+        break;
+      }
+    }
+
+    if (matchRow) {
+      const updateRange = `'COTD Stats'!B${matchRow}:B500`;
+
+      googleSheets.spreadsheets.values.update({
+        auth,
+        spreadsheetId,
+        range: updateRange,
+        valueInputOption: "USER_ENTERED",
+        resource: {
+          values: [[playerCount]],
+        },
+      });
+    }
   }
 };
 

@@ -22,6 +22,12 @@ module.exports = {
       option
         .setName("date")
         .setDescription("The date of the cotd (format: MM/DD)")
+    )
+    .addIntegerOption((option) =>
+      option
+        .setName("playercount")
+        .setDescription("The player count of the cup")
+        .setRequired(false)
     ),
 
   async execute(interaction) {
@@ -29,6 +35,8 @@ module.exports = {
       await interaction.deferReply();
       const track = interaction.options.getString("name");
       const type = interaction.options.getString("type");
+      const playerCount = interaction.options.getInteger("playercount");
+      console.log(playerCount)
       let date = "";
 
       if (interaction.options.getString("date")) {
@@ -55,6 +63,7 @@ module.exports = {
           track: track,
           type: type,
           date: date,
+          playerCount: playerCount,
         };
 
         const response = await fetch("http://localhost:8080/cotdinfo", {
@@ -79,7 +88,9 @@ module.exports = {
       );
     } catch (error) {
       console.error("Error in execute:", error.message);
-      await interaction.editReply("An error occurred while executing the command.");
+      await interaction.editReply(
+        "An error occurred while executing the command."
+      );
     }
   },
 };
