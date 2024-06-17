@@ -99,7 +99,7 @@ const updateCotdInfo = async (track, type, date, playerCount) => {
 
     matchRow = null;
 
-    for (let row = 0; row < values.length; row++) {
+    for (let row = 0; row < playerCountValues.length; row++) {
       if (values[row][0] === date) {
         matchRow = row + 1;
         break;
