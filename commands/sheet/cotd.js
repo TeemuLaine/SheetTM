@@ -28,7 +28,6 @@ module.exports = {
     ),
 
   async execute(interaction) {
-
     try {
       await interaction.deferReply();
       const user = await getName(interaction);
@@ -37,6 +36,7 @@ module.exports = {
       let date = "";
 
       let success;
+      let newEntry;
 
       if (interaction.options.getString("date")) {
         const unformattedDate = interaction.options.getString("date");
@@ -95,6 +95,7 @@ module.exports = {
         } else {
           success = false;
         }
+        newEntry = result.newEntry;
       } catch (error) {
         console.error("Error fetching data:", error);
         await interaction.editReply("An error occurred while fetching data.");
@@ -102,15 +103,23 @@ module.exports = {
       }
 
       if (success) {
-        await interaction.editReply(
-          `Updated ${user.name}'s cotd performance on ${date} to division ${div}, rank ${rank}`
-        );
+        if (newEntry) {
+          await interaction.editReply(
+            `Updated ${user.name}'s cotd performance on ${date} to division ${div}, rank ${rank} - **New COTDigami entry!**`
+          );
+        } else {
+          await interaction.editReply(
+            `Updated ${user.name}'s cotd performance on ${date} to division ${div}, rank ${rank}`
+          );
+        }
       } else {
         await interaction.editReply(`Name not found on the sheet.`);
       }
     } catch (error) {
       console.error("Error in execute:", error);
-      await interaction.editReply("An error occurred while executing the command.");
+      await interaction.editReply(
+        "An error occurred while executing the command."
+      );
     }
   },
 };

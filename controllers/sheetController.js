@@ -31,6 +31,17 @@ const updateCotdSheet = async (player, date, div, rank) => {
       }
     }
   }
+
+  const gamiRange = "COTDigami!B2:BD66";
+  const cotdgamiRows = await googleSheets.spreadsheets.values.get({
+    auth,
+    spreadsheetId,
+    range: gamiRange,
+  });
+
+  const gamiValues = cotdgamiRows.data.values;
+  const newEntry = gamiValues[div][rank] == "";
+
   if (matchColumn && matchRow) {
     const updateRange = `COTD!${matchColumn}${matchRow}`;
 
@@ -43,7 +54,7 @@ const updateCotdSheet = async (player, date, div, rank) => {
         values: [[div, rank]],
       },
     });
-    return { matchFound: true };
+    return { matchFound: true, newEntry };
   } else {
     return { matchFound: false };
   }
@@ -51,7 +62,7 @@ const updateCotdSheet = async (player, date, div, rank) => {
 
 const updateCotdInfo = async (track, type, date, playerCount) => {
   const [auth, googleSheets] = await getSheetAuth();
-  console.log(playerCount)
+  console.log(playerCount);
 
   const range = "COTD!A1:C";
 
