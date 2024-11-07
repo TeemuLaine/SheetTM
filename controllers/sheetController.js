@@ -40,8 +40,7 @@ const updateCotdSheet = async (player, date, div, rank) => {
   });
 
   const gamiValues = cotdgamiRows.data.values;
-  const newEntry = gamiValues[div][rank] == "";
-
+  const newEntry = gamiValues[rank][div] == "";
   if (matchColumn && matchRow) {
     const updateRange = `COTD!${matchColumn}${matchRow}`;
 
@@ -62,7 +61,6 @@ const updateCotdSheet = async (player, date, div, rank) => {
 
 const updateCotdInfo = async (track, type, date, playerCount) => {
   const [auth, googleSheets] = await getSheetAuth();
-  console.log(playerCount);
 
   const range = "COTD!A1:C";
 

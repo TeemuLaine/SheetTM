@@ -36,7 +36,6 @@ module.exports = {
       const track = interaction.options.getString("name");
       const type = interaction.options.getString("type");
       const playerCount = interaction.options.getInteger("playercount");
-      console.log(playerCount)
       let date = "";
 
       if (interaction.options.getString("date")) {
