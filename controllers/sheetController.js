@@ -24,6 +24,7 @@ const updateCotdSheet = async (player, date, div, rank) => {
     if (values[0][column] === player) {
       matchColumn = getColumnLetter(column - 1);
       for (let row = 0; row < values.length; row++) {
+        console.log(values[row][0])
         if (values[row][0] === date) {
           matchRow = row + 1;
           break;

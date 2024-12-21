@@ -40,18 +40,19 @@ module.exports = {
 
       if (interaction.options.getString("date")) {
         const unformattedDate = interaction.options.getString("date");
-        let [day, month] = unformattedDate.split("/");
+        let [day, month, year] = unformattedDate.split("/");
         day = day.padStart(2, "0");
         month = month.padStart(2, "0");
-        date = `${day}/${month}`;
+        date = `${day}/${month}/${year}`;
       } else {
         const today = new Date();
         const day = today.getDate().toString().padStart(2, "0");
         const month = (today.getMonth() + 1).toString().padStart(2, "0");
-        date = `${month}/${day}`;
+        const year = today.getFullYear().toString();
+        date = `${month}/${day}/${year}`;
       }
+      const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
 
-      const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/;
       if (!dateRegex.test(date)) {
         await interaction.editReply("Invalid date format.");
         return;
